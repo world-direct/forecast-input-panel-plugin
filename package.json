@@ -1,0 +1,29 @@
+{
+  "name": "world-direct-forecast-input-panel",
+  "version": "1.0.0",
+  "description": "...",
+  "scripts": {
+    "build": "grafana-toolkit plugin:build",
+    "test": "grafana-toolkit plugin:test",
+    "dev": "grafana-toolkit plugin:dev",
+    "watch": "grafana-toolkit plugin:dev --watch",
+    "sign": "grafana-toolkit plugin:sign",
+    "start": "yarn watch"
+  },
+  "author": "Nathanael Huber",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@grafana/toolkit": "8.2.2",
+    "@types/uuid": "^8.3.1"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "dependencies": {
+    "@grafana/data": "8.2.2",
+    "@grafana/ui": "8.2.2",
+    "emotion": "10.0.27",
+    "react-query": "^3.31.0",
+    "uuid": "^8.3.2"
+  }
+}
