@@ -19,7 +19,7 @@ export interface IApiClient {
    * @param body (optional)
    * @return Success
    */
-  cablewayForecastPOST(body: CablewayForecast): Promise<void>;
+  cablewayForecastPOST(body: CablewayForecast | undefined): Promise<void>;
   /**
    * @return Success
    */
@@ -28,7 +28,7 @@ export interface IApiClient {
    * @param body (optional)
    * @return Success
    */
-  cablewayForecastPUT(id: string, body: CablewayForecast): Promise<void>;
+  cablewayForecastPUT(id: string, body: CablewayForecast | undefined): Promise<void>;
   /**
    * @return Success
    */
@@ -41,7 +41,7 @@ export interface IApiClient {
    * @param body (optional)
    * @return Success
    */
-  snowmakingForecastPOST(body: SnowmakingForecast): Promise<void>;
+  snowmakingForecastPOST(body: SnowmakingForecast | undefined): Promise<void>;
   /**
    * @return Success
    */
@@ -50,7 +50,7 @@ export interface IApiClient {
    * @param body (optional)
    * @return Success
    */
-  snowmakingForecastPUT(id: string, body: SnowmakingForecast): Promise<void>;
+  snowmakingForecastPUT(id: string, body: SnowmakingForecast | undefined): Promise<void>;
   /**
    * @return Success
    */
@@ -136,7 +136,7 @@ export class ApiClient extends ClientBase implements IApiClient {
    * @param body (optional)
    * @return Success
    */
-  cablewayForecastPOST(body: CablewayForecast): Promise<void> {
+  cablewayForecastPOST(body: CablewayForecast | undefined): Promise<void> {
     let url_ = this.baseUrl + '/api/CablewayForecast';
     url_ = url_.replace(/[?&]$/, '');
 
@@ -256,7 +256,7 @@ export class ApiClient extends ClientBase implements IApiClient {
    * @param body (optional)
    * @return Success
    */
-  cablewayForecastPUT(id: string, body: CablewayForecast): Promise<void> {
+  cablewayForecastPUT(id: string, body: CablewayForecast | undefined): Promise<void> {
     let url_ = this.baseUrl + '/api/CablewayForecast/{id}';
     if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace('{id}', encodeURIComponent('' + id));
@@ -440,7 +440,7 @@ export class ApiClient extends ClientBase implements IApiClient {
    * @param body (optional)
    * @return Success
    */
-  snowmakingForecastPOST(body: SnowmakingForecast): Promise<void> {
+  snowmakingForecastPOST(body: SnowmakingForecast | undefined): Promise<void> {
     let url_ = this.baseUrl + '/api/SnowmakingForecast';
     url_ = url_.replace(/[?&]$/, '');
 
@@ -560,7 +560,7 @@ export class ApiClient extends ClientBase implements IApiClient {
    * @param body (optional)
    * @return Success
    */
-  snowmakingForecastPUT(id: string, body: SnowmakingForecast): Promise<void> {
+  snowmakingForecastPUT(id: string, body: SnowmakingForecast | undefined): Promise<void> {
     let url_ = this.baseUrl + '/api/SnowmakingForecast/{id}';
     if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace('{id}', encodeURIComponent('' + id));
@@ -686,8 +686,8 @@ export class CablewayForecast implements ICablewayForecast {
   userId!: string;
   scenario!: string;
   powerInKW!: number;
-  fromDate!: Date;
-  toDate!: Date;
+  fromDate!: string;
+  toDate!: string;
   fromTime!: string;
   toTime!: string;
 
@@ -704,9 +704,9 @@ export class CablewayForecast implements ICablewayForecast {
       this.id = _data['id'];
       this.userId = _data['userId'];
       this.scenario = _data['scenario'];
-      this.powerInKW = Number(_data['powerInKW']);
-      this.fromDate = _data['fromDate'] ? new Date(_data['fromDate'].toString()) : <any>undefined;
-      this.toDate = _data['toDate'] ? new Date(_data['toDate'].toString()) : <any>undefined;
+      this.powerInKW = _data['powerInKW'];
+      this.fromDate = _data['fromDate'];
+      this.toDate = _data['toDate'];
       this.fromTime = _data['fromTime'];
       this.toTime = _data['toTime'];
     }
@@ -725,8 +725,8 @@ export class CablewayForecast implements ICablewayForecast {
     data['userId'] = this.userId;
     data['scenario'] = this.scenario;
     data['powerInKW'] = this.powerInKW;
-    data['fromDate'] = this.fromDate ? this.fromDate.toISOString() : <any>undefined;
-    data['toDate'] = this.toDate ? this.toDate.toISOString() : <any>undefined;
+    data['fromDate'] = this.fromDate;
+    data['toDate'] = this.toDate;
     data['fromTime'] = this.fromTime;
     data['toTime'] = this.toTime;
     return data;
@@ -738,8 +738,8 @@ export interface ICablewayForecast {
   userId: string;
   scenario: string;
   powerInKW: number;
-  fromDate: Date;
-  toDate: Date;
+  fromDate: string;
+  toDate: string;
   fromTime: string;
   toTime: string;
 }
@@ -800,8 +800,8 @@ export class SnowmakingForecast implements ISnowmakingForecast {
   userId!: string;
   scenario!: string;
   powerInKW!: number;
-  from!: Date;
-  to!: Date;
+  from!: string;
+  to!: string;
 
   constructor(data?: ISnowmakingForecast) {
     if (data) {
@@ -816,9 +816,9 @@ export class SnowmakingForecast implements ISnowmakingForecast {
       this.id = _data['id'];
       this.userId = _data['userId'];
       this.scenario = _data['scenario'];
-      this.powerInKW = Number(_data['powerInKW']);
-      this.from = _data['from'] ? new Date(_data['from'].toString()) : <any>undefined;
-      this.to = _data['to'] ? new Date(_data['to'].toString()) : <any>undefined;
+      this.powerInKW = _data['powerInKW'];
+      this.from = _data['from'];
+      this.to = _data['to'];
     }
   }
 
@@ -835,8 +835,8 @@ export class SnowmakingForecast implements ISnowmakingForecast {
     data['userId'] = this.userId;
     data['scenario'] = this.scenario;
     data['powerInKW'] = this.powerInKW;
-    data['from'] = this.from ? this.from.toISOString() : <any>undefined;
-    data['to'] = this.to ? this.to.toISOString() : <any>undefined;
+    data['from'] = this.from;
+    data['to'] = this.to;
     return data;
   }
 }
@@ -846,8 +846,8 @@ export interface ISnowmakingForecast {
   userId: string;
   scenario: string;
   powerInKW: number;
-  from: Date;
-  to: Date;
+  from: string;
+  to: string;
 }
 
 export class ApiException extends Error {

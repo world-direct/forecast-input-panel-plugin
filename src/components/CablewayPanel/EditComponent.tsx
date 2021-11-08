@@ -1,4 +1,14 @@
-import { Button, Field, FieldSet, Form, InlineLabel, Input, Label } from '@grafana/ui';
+import {
+  Button,
+  DatePickerWithInput,
+  Field,
+  FieldSet,
+  Form,
+  InlineLabel,
+  Input,
+  InputControl,
+  Label,
+} from '@grafana/ui';
 
 import ICablewaysForecast from '../../models/ICablewayForecast';
 import { NIL as NIL_UUID } from 'uuid';
@@ -71,49 +81,61 @@ const EditComponent: React.FC<Props> = (props) => {
           <FieldSet>
             <Label className={styles.title}>Zeitraum</Label>
             <Field invalid={!!errors.fromDate} error={errors.fromDate?.message}>
-              <Input
-                placeholder={moment().format('DD.MM.YYYY')}
-                addonBefore={<InlineLabel className={styles.label}>Von</InlineLabel>}
-                {...register('fromDate', {
+              <InputControl
+                render={({ field }) => (
+                  <DatePickerWithInput
+                    addonBefore={<InlineLabel className={styles.label}>Von</InlineLabel>}
+                    {...field}
+                  />
+                )}
+                control={control}
+                name="fromDate"
+                rules={{
                   required: 'Bitte ausfüllen',
                   validate: (value) => {
-                    let a = moment(value, 'DD.MM.YYYY');
+                    let a = moment(value, 'MM/DD/YYYY');
                     if (!a.isValid()) {
-                      return 'Ungültiges Format (DD.MM.YYYY)';
+                      return 'Ungültiges Format (MM/DD/YYYY)';
                     }
 
-                    let b = moment(getValues('toDate'), 'DD.MM.YYYY');
+                    let b = moment(getValues('toDate'), 'MM/DD/YYYY');
 
-                    if (a > b) {
+                    if (a.diff(b) > 0) {
                       return 'Enddatum passt nicht zum Startdatum';
                     }
 
                     return true;
                   },
-                })}
+                }}
               />
             </Field>
             <Field invalid={!!errors.toDate} error={errors.toDate?.message}>
-              <Input
-                placeholder={moment().format('DD.MM.YYYY')}
-                addonBefore={<InlineLabel className={styles.label}>Bis</InlineLabel>}
-                {...register('toDate', {
+              <InputControl
+                render={({ field }) => (
+                  <DatePickerWithInput
+                    addonBefore={<InlineLabel className={styles.label}>Bis</InlineLabel>}
+                    {...field}
+                  />
+                )}
+                control={control}
+                name="toDate"
+                rules={{
                   required: 'Bitte ausfüllen',
                   validate: (value) => {
-                    let a = moment(getValues('fromDate'), 'DD.MM.YYYY');
-                    let b = moment(value, 'DD.MM.YYYY');
+                    let a = moment(getValues('fromDate'), 'MM/DD/YYYY');
+                    let b = moment(value, 'MM/DD/YYYY');
 
                     if (!b.isValid()) {
-                      return 'Ungültiges Format (DD.MM.YYYY)';
+                      return 'Ungültiges Format (MM/DD/YYYY)';
                     }
 
-                    if (a > b) {
+                    if (a.diff(b) > 0) {
                       return 'Enddatum passt nicht zum Startdatum';
                     }
 
                     return true;
                   },
-                })}
+                }}
               />
             </Field>
           </FieldSet>
@@ -133,7 +155,7 @@ const EditComponent: React.FC<Props> = (props) => {
                     let a = moment(value, 'HH:mm');
                     let b = moment(getValues('toTime'), 'HH:mm');
 
-                    if (a >= b) {
+                    if (a.diff(b) === 0) {
                       return 'Endzeit passt nicht zur Startzeit';
                     }
 
@@ -156,7 +178,7 @@ const EditComponent: React.FC<Props> = (props) => {
                     let a = moment(getValues('fromTime'), 'HH:mm');
                     let b = moment(value, 'HH:mm');
 
-                    if (a >= b) {
+                    if (a.diff(b) === 0) {
                       return 'Endzeit passt nicht zur Startzeit';
                     }
 

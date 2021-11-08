@@ -1,8 +1,9 @@
-import { Button, Field, FieldSet, Form, InlineLabel, Input, Label } from '@grafana/ui';
+import { Button, DateTimePicker, Field, FieldSet, Form, InlineLabel, Input, InputControl, Label } from '@grafana/ui';
 
 import ISnowmakingForecast from '../../models/ISnowmakingForecast';
 import { NIL as NIL_UUID } from 'uuid';
 import React from 'react';
+import { dateTime } from '@grafana/data';
 import moment from 'moment';
 import useStyles from './styles';
 
@@ -71,10 +72,18 @@ const EditComponent: React.FC<Props> = (props) => {
           <FieldSet>
             <Label className={styles.title}>Zeitraum</Label>
             <Field invalid={!!errors.from} error={errors.from?.message}>
-              <Input
-                placeholder={moment().format('DD.MM.YYYY HH:mm')}
-                addonBefore={<InlineLabel className={styles.label}>Von</InlineLabel>}
-                {...register('from', {
+              <InputControl
+                render={({ field }) => (
+                  <DateTimePicker
+                    label={<InlineLabel className={styles.label}>Von</InlineLabel>}
+                    date={dateTime(field.value, 'DD.MM.YYYY HH:mm')}
+                    {...field}
+                    onChange={(value) => field.onChange(value.format('DD.MM.YYYY HH:mm'))}
+                  />
+                )}
+                control={control}
+                name="from"
+                rules={{
                   required: 'Bitte ausfüllen',
                   validate: (value) => {
                     let a = moment(value, 'DD.MM.YYYY HH:mm');
@@ -84,20 +93,28 @@ const EditComponent: React.FC<Props> = (props) => {
 
                     let b = moment(getValues('to'), 'DD.MM.YYYY HH:mm');
 
-                    if (a >= b) {
+                    if (a.diff(b) >= 0) {
                       return 'Endzeit passt nicht zur Startzeit';
                     }
 
                     return true;
                   },
-                })}
+                }}
               />
             </Field>
             <Field invalid={!!errors.to} error={errors.to?.message}>
-              <Input
-                placeholder={moment().format('DD.MM.YYYY HH:mm')}
-                addonBefore={<InlineLabel className={styles.label}>Bis</InlineLabel>}
-                {...register('to', {
+              <InputControl
+                render={({ field }) => (
+                  <DateTimePicker
+                    label={<InlineLabel className={styles.label}>Bis</InlineLabel>}
+                    date={dateTime(field.value, 'DD.MM.YYYY HH:mm')}
+                    {...field}
+                    onChange={(value) => field.onChange(value.format('DD.MM.YYYY HH:mm'))}
+                  />
+                )}
+                control={control}
+                name="to"
+                rules={{
                   required: 'Bitte ausfüllen',
                   validate: (value) => {
                     let a = moment(getValues('from'), 'DD.MM.YYYY HH:mm');
@@ -107,13 +124,13 @@ const EditComponent: React.FC<Props> = (props) => {
                       return 'Ungültiges Format (DD.MM.YYYY HH:mm)';
                     }
 
-                    if (a >= b) {
+                    if (a.diff(b) >= 0) {
                       return 'Endzeit passt nicht zur Startzeit';
                     }
 
                     return true;
                   },
-                })}
+                }}
               />
             </Field>
           </FieldSet>

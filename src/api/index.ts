@@ -53,8 +53,8 @@ export class ApiClient implements IApiClient {
     return {
       ...dto,
       power: Number(dto.powerInKW),
-      fromDate: moment(dto.fromDate).format('DD.MM.YYYY'),
-      toDate: moment(dto.toDate).format('DD.MM.YYYY'),
+      fromDate: moment(dto.fromDate).format('MM/DD/YYYY'),
+      toDate: moment(dto.toDate).format('MM/DD/YYYY'),
       fromTime: this.toMoment(dto.fromTime),
       toTime: this.toMoment(dto.toTime),
     };
@@ -66,8 +66,8 @@ export class ApiClient implements IApiClient {
       id: model.id ?? NIL_UUID,
       powerInKW: Number(model.power),
       userId: userId,
-      fromDate: moment(model.fromDate, 'DD.MM.YYYY').toDate(),
-      toDate: moment(model.toDate, 'DD.MM.YYYY').toDate(),
+      fromDate: moment(model.fromDate, 'MM/DD/YYYY').format('YYYY-MM-DDTHH:mm:ssZ'),
+      toDate: moment(model.toDate, 'MM/DD/YYYY').format('YYYY-MM-DDTHH:mm:ssZ'),
       fromTime: this.toTimeSpanDto(model.fromTime),
       toTime: this.toTimeSpanDto(model.toTime),
     });
@@ -88,8 +88,8 @@ export class ApiClient implements IApiClient {
       id: model.id ?? NIL_UUID,
       powerInKW: Number(model.power),
       userId: userId,
-      from: moment(model.from, 'DD.MM.YYYY HH:mm').toDate(),
-      to: moment(model.to, 'DD.MM.YYYY HH:mm').toDate(),
+      from: moment(model.from, 'DD.MM.YYYY HH:mm').format('YYYY-MM-DDTHH:mm:ssZ'),
+      to: moment(model.to, 'DD.MM.YYYY HH:mm').format('YYYY-MM-DDTHH:mm:ssZ'),
     });
   }
 

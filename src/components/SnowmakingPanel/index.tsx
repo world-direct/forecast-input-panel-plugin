@@ -6,6 +6,7 @@ import ISnowmakingForecast from '../../models/ISnowmakingForecast';
 import LoadComponent from './LoadComponent';
 import { NIL as NIL_UUID } from 'uuid';
 import React from 'react';
+import debounce from 'lodash.debounce';
 import moment from 'moment';
 import { useApiClient } from 'components/ApiClientProvider';
 import { v4 as uuidv4 } from 'uuid';
@@ -19,6 +20,13 @@ const SnowmakingPanel: React.FC<Props> = ({ userId }) => {
   const [message, setMessage] = React.useState<string | undefined>(undefined);
 
   const client = useApiClient();
+
+  const updateMessage = (message: string | undefined) => {
+    setMessage(message);
+    if (message !== undefined) {
+      debounce(() => setMessage(undefined), 3000)();
+    }
+  };
 
   const { data, isLoading, refetch } = useQuery(
     ['getSnowmakingForecast', id],
@@ -44,21 +52,21 @@ const SnowmakingPanel: React.FC<Props> = ({ userId }) => {
       refetchOnWindowFocus: false,
       retry: 0,
       onSuccess: () => {
-        // setMessage(undefined);
+        // updateMessage(undefined);
       },
       onError: (error: any) => {
         if (error.status === 404) {
-          setMessage('Eintrag nicht gefunden.');
+          updateMessage('Eintrag nicht gefunden.');
           return;
         }
-        setMessage('Fehler!');
+        updateMessage('Fehler!');
       },
     }
   );
 
   const handleSave = async (forecast: ISnowmakingForecast): Promise<void> => {
     if (forecast.id === null) {
-      setMessage('Fehler!');
+      updateMessage('Fehler!');
       return;
     }
 
@@ -72,16 +80,17 @@ const SnowmakingPanel: React.FC<Props> = ({ userId }) => {
 
   const saveMutation = useMutation(handleSave, {
     onSuccess: () => {
-      setMessage('Gespeichert!');
+      setId(null);
+      updateMessage('Gespeichert!');
     },
     onError: () => {
-      setMessage('Fehler!');
+      updateMessage('Fehler!');
     },
   });
 
   const handleDelete = async (forecast: ISnowmakingForecast): Promise<void> => {
     if (forecast.id === null) {
-      setMessage('Fehler!');
+      updateMessage('Fehler!');
       return;
     }
 
@@ -91,25 +100,25 @@ const SnowmakingPanel: React.FC<Props> = ({ userId }) => {
   const deleteMutation = useMutation(handleDelete, {
     onSuccess: () => {
       setId(null);
-      setMessage('Gelöscht!');
+      updateMessage('Gelöscht!');
     },
     onError: () => {
-      setMessage('Fehler!');
+      updateMessage('Fehler!');
     },
   });
 
   const onCreate = (): void => {
-    setMessage(undefined);
+    updateMessage(undefined);
     setId(NIL_UUID);
   };
 
   const onReturn = (): void => {
-    setMessage(undefined);
+    updateMessage(undefined);
     setId(null);
   };
 
   const onLoad = (forecast: ISnowmakingForecast) => {
-    setMessage(undefined);
+    updateMessage(undefined);
     setId(forecast.id);
     refetch();
   };
@@ -122,7 +131,7 @@ const SnowmakingPanel: React.FC<Props> = ({ userId }) => {
     return (
       <>
         {message !== undefined ? (
-          <Alert title={message} severity="info" onRemove={() => setMessage(undefined)} />
+          <Alert title={message} severity="info" onRemove={() => updateMessage(undefined)} />
         ) : null}
         <LoadComponent onCreate={onCreate} onLoad={onLoad} />
       </>
@@ -131,7 +140,9 @@ const SnowmakingPanel: React.FC<Props> = ({ userId }) => {
 
   return (
     <>
-      {message !== undefined ? <Alert title={message} severity="info" onRemove={() => setMessage(undefined)} /> : null}
+      {message !== undefined ? (
+        <Alert title={message} severity="info" onRemove={() => updateMessage(undefined)} />
+      ) : null}
       <EditComponent
         forecast={data}
         onReturn={onReturn}
