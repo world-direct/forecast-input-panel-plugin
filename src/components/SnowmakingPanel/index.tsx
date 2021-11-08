@@ -1,5 +1,5 @@
 import { Alert, LoadingPlaceholder } from '@grafana/ui';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
 import EditComponent from './EditComponent';
 import ISnowmakingForecast from '../../models/ISnowmakingForecast';
@@ -18,7 +18,6 @@ const SnowmakingPanel: React.FC<Props> = ({ userId }) => {
   const [id, setId] = React.useState<string | null>(null);
   const [message, setMessage] = React.useState<string | undefined>(undefined);
 
-  const queryClient = useQueryClient();
   const client = useApiClient();
 
   const { data, isLoading, refetch } = useQuery(
@@ -45,7 +44,7 @@ const SnowmakingPanel: React.FC<Props> = ({ userId }) => {
       refetchOnWindowFocus: false,
       retry: 0,
       onSuccess: () => {
-        setMessage(undefined);
+        // setMessage(undefined);
       },
       onError: (error: any) => {
         if (error.status === 404) {
@@ -73,7 +72,6 @@ const SnowmakingPanel: React.FC<Props> = ({ userId }) => {
 
   const saveMutation = useMutation(handleSave, {
     onSuccess: () => {
-      queryClient.invalidateQueries('getSnowmakingForecast');
       setMessage('Gespeichert!');
     },
     onError: () => {
@@ -92,7 +90,7 @@ const SnowmakingPanel: React.FC<Props> = ({ userId }) => {
 
   const deleteMutation = useMutation(handleDelete, {
     onSuccess: () => {
-      queryClient.invalidateQueries('getSnowmakingForecast');
+      setId(null);
       setMessage('Gelöscht!');
     },
     onError: () => {

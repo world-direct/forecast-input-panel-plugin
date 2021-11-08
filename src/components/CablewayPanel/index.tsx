@@ -46,7 +46,7 @@ const CablewayPanel: React.FC<Props> = ({ userId }) => {
       refetchOnWindowFocus: false,
       retry: 0,
       onSuccess: () => {
-        setMessage(undefined);
+        // setMessage(undefined);
       },
       onError: (error: any) => {
         if (error.status === 404) {
