@@ -12,7 +12,7 @@ import { useApiClient } from 'components/ApiClientProvider';
 import { v4 as uuidv4 } from 'uuid';
 
 type Props = {
-  userId: string;
+  userId: number;
 };
 
 const SnowmakingPanel: React.FC<Props> = ({ userId }) => {
@@ -20,6 +20,8 @@ const SnowmakingPanel: React.FC<Props> = ({ userId }) => {
   const [message, setMessage] = React.useState<string | undefined>(undefined);
 
   const client = useApiClient();
+
+  const refresh = document.querySelector<HTMLButtonElement>('[aria-label="RefreshPicker run button"]');
 
   const updateMessage = (message: string | undefined) => {
     setMessage(message);
@@ -81,6 +83,9 @@ const SnowmakingPanel: React.FC<Props> = ({ userId }) => {
   const saveMutation = useMutation(handleSave, {
     onSuccess: () => {
       setId(null);
+      if (refresh !== null) {
+        refresh.click();
+      }
       updateMessage('Gespeichert!');
     },
     onError: () => {
@@ -100,6 +105,9 @@ const SnowmakingPanel: React.FC<Props> = ({ userId }) => {
   const deleteMutation = useMutation(handleDelete, {
     onSuccess: () => {
       setId(null);
+      if (refresh !== null) {
+        refresh.click();
+      }
       updateMessage('Gelöscht!');
     },
     onError: () => {

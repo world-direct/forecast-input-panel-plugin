@@ -10,54 +10,7 @@
 import { ClientBase } from './ClientBase';
 import ClientConfiguration from './ClientConfiguration';
 
-export interface IApiClient {
-  /**
-   * @return Success
-   */
-  cablewayForecastAll(): Promise<CablewayForecast[]>;
-  /**
-   * @param body (optional)
-   * @return Success
-   */
-  cablewayForecastPOST(body: CablewayForecast | undefined): Promise<void>;
-  /**
-   * @return Success
-   */
-  cablewayForecastGET(id: string): Promise<CablewayForecast>;
-  /**
-   * @param body (optional)
-   * @return Success
-   */
-  cablewayForecastPUT(id: string, body: CablewayForecast | undefined): Promise<void>;
-  /**
-   * @return Success
-   */
-  cablewayForecastDELETE(id: string): Promise<void>;
-  /**
-   * @return Success
-   */
-  snowmakingForecastAll(): Promise<SnowmakingForecast[]>;
-  /**
-   * @param body (optional)
-   * @return Success
-   */
-  snowmakingForecastPOST(body: SnowmakingForecast | undefined): Promise<void>;
-  /**
-   * @return Success
-   */
-  snowmakingForecastGET(id: string): Promise<SnowmakingForecast>;
-  /**
-   * @param body (optional)
-   * @return Success
-   */
-  snowmakingForecastPUT(id: string, body: SnowmakingForecast | undefined): Promise<void>;
-  /**
-   * @return Success
-   */
-  snowmakingForecastDELETE(id: string): Promise<void>;
-}
-
-export class ApiClient extends ClientBase implements IApiClient {
+export class ApiClient extends ClientBase {
   private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
   private baseUrl: string;
   protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -146,7 +99,7 @@ export class ApiClient extends ClientBase implements IApiClient {
       body: content_,
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json-patch+json',
       },
     };
 
@@ -268,7 +221,7 @@ export class ApiClient extends ClientBase implements IApiClient {
       body: content_,
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json-patch+json',
       },
     };
 
@@ -450,7 +403,7 @@ export class ApiClient extends ClientBase implements IApiClient {
       body: content_,
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json-patch+json',
       },
     };
 
@@ -572,7 +525,7 @@ export class ApiClient extends ClientBase implements IApiClient {
       body: content_,
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json-patch+json',
       },
     };
 
@@ -683,7 +636,7 @@ export class ApiClient extends ClientBase implements IApiClient {
 
 export class CablewayForecast implements ICablewayForecast {
   id!: string;
-  userId!: string;
+  userId!: number;
   scenario!: string;
   powerInKW!: number;
   fromDate!: string;
@@ -735,7 +688,7 @@ export class CablewayForecast implements ICablewayForecast {
 
 export interface ICablewayForecast {
   id: string;
-  userId: string;
+  userId: number;
   scenario: string;
   powerInKW: number;
   fromDate: string;
@@ -797,7 +750,7 @@ export interface IProblemDetails {
 
 export class SnowmakingForecast implements ISnowmakingForecast {
   id!: string;
-  userId!: string;
+  userId!: number;
   scenario!: string;
   powerInKW!: number;
   from!: string;
@@ -843,14 +796,14 @@ export class SnowmakingForecast implements ISnowmakingForecast {
 
 export interface ISnowmakingForecast {
   id: string;
-  userId: string;
+  userId: number;
   scenario: string;
   powerInKW: number;
   from: string;
   to: string;
 }
 
-export class ApiException extends Error {
+export class ApiError extends Error {
   message: string;
   status: number;
   response: string;
@@ -867,10 +820,10 @@ export class ApiException extends Error {
     this.result = result;
   }
 
-  protected isApiException = true;
+  protected isApiError = true;
 
-  static isApiException(obj: any): obj is ApiException {
-    return obj.isApiException === true;
+  static isApiError(obj: any): obj is ApiError {
+    return obj.isApiError === true;
   }
 }
 
@@ -882,5 +835,5 @@ function throwException(
   result?: any
 ): any {
   if (result !== null && result !== undefined) throw result;
-  else throw new ApiException(message, status, response, headers, null);
+  else throw new ApiError(message, status, response, headers, null);
 }

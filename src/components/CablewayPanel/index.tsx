@@ -12,7 +12,7 @@ import { useApiClient } from 'components/ApiClientProvider';
 import { v4 as uuidv4 } from 'uuid';
 
 type Props = {
-  userId: string;
+  userId: number;
 };
 
 const CablewayPanel: React.FC<Props> = ({ userId }) => {
@@ -20,6 +20,8 @@ const CablewayPanel: React.FC<Props> = ({ userId }) => {
   const [message, setMessage] = React.useState<string | undefined>(undefined);
 
   const client = useApiClient();
+
+  const refresh = document.querySelector<HTMLButtonElement>('[aria-label="RefreshPicker run button"]');
 
   const updateMessage = (message: string | undefined) => {
     setMessage(message);
@@ -40,8 +42,8 @@ const CablewayPanel: React.FC<Props> = ({ userId }) => {
           id: NIL_UUID,
           scenario: '',
           power: 0,
-          fromDate: moment().format('DD.MM.YYYY'),
-          toDate: moment().format('DD.MM.YYYY'),
+          fromDate: moment().format('MM/DD/YYYY'),
+          toDate: moment().format('MM/DD/YYYY'),
           fromTime: moment().format('HH:mm'),
           toTime: moment().format('HH:mm'),
         };
@@ -83,6 +85,9 @@ const CablewayPanel: React.FC<Props> = ({ userId }) => {
   const saveMutation = useMutation(handleSave, {
     onSuccess: () => {
       setId(null);
+      if (refresh !== null) {
+        refresh.click();
+      }
       updateMessage('Gespeichert!');
     },
     onError: () => {
@@ -102,6 +107,9 @@ const CablewayPanel: React.FC<Props> = ({ userId }) => {
   const deleteMutation = useMutation(handleDelete, {
     onSuccess: () => {
       setId(null);
+      if (refresh !== null) {
+        refresh.click();
+      }
       updateMessage('Gelöscht!');
     },
     onError: () => {

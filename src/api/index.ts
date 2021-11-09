@@ -15,21 +15,21 @@ import moment from 'moment';
 export interface IApiClient {
   getCablewayForecastsAsync(): Promise<ICablewayForecast[]>;
 
-  createCablewayForecast(userId: string, forecast: ICablewayForecast): Promise<void>;
+  createCablewayForecast(userId: number, forecast: ICablewayForecast): Promise<void>;
 
   getCablewayForecast(id: string): Promise<ICablewayForecast>;
 
-  updateCablewayForecast(userId: string, forecast: ICablewayForecast): Promise<void>;
+  updateCablewayForecast(userId: number, forecast: ICablewayForecast): Promise<void>;
 
   deleteCablewayForecast(id: string): Promise<void>;
 
   getSnowmakingForecastsAsync(): Promise<ISnowmakingForecast[]>;
 
-  createSnowmakingForecast(userId: string, forecast: ISnowmakingForecast): Promise<void>;
+  createSnowmakingForecast(userId: number, forecast: ISnowmakingForecast): Promise<void>;
 
   getSnowmakingForecast(id: string): Promise<ISnowmakingForecast>;
 
-  updateSnowmakingForecast(userId: string, forecast: ISnowmakingForecast): Promise<void>;
+  updateSnowmakingForecast(userId: number, forecast: ISnowmakingForecast): Promise<void>;
 
   deleteSnowmakingForecast(id: string): Promise<void>;
 }
@@ -60,7 +60,7 @@ export class ApiClient implements IApiClient {
     };
   }
 
-  private toCablewayForecastDto(userId: string, model: ICablewayForecast): CablewayForecastDto {
+  private toCablewayForecastDto(userId: number, model: ICablewayForecast): CablewayForecastDto {
     return new CablewayForecastDto({
       ...model,
       id: model.id ?? NIL_UUID,
@@ -82,7 +82,7 @@ export class ApiClient implements IApiClient {
     };
   }
 
-  private toSnowmakingForecastDto(userId: string, model: ISnowmakingForecast): SnowmakingForecastDto {
+  private toSnowmakingForecastDto(userId: number, model: ISnowmakingForecast): SnowmakingForecastDto {
     return new SnowmakingForecastDto({
       ...model,
       id: model.id ?? NIL_UUID,
@@ -105,7 +105,7 @@ export class ApiClient implements IApiClient {
     return models;
   }
 
-  async createCablewayForecast(userId: string, forecast: ICablewayForecast): Promise<void> {
+  async createCablewayForecast(userId: number, forecast: ICablewayForecast): Promise<void> {
     var dto = this.toCablewayForecastDto(userId, forecast);
 
     await this.client.cablewayForecastPOST(dto);
@@ -119,7 +119,7 @@ export class ApiClient implements IApiClient {
     return model;
   }
 
-  async updateCablewayForecast(userId: string, forecast: ICablewayForecast): Promise<void> {
+  async updateCablewayForecast(userId: number, forecast: ICablewayForecast): Promise<void> {
     var dto = this.toCablewayForecastDto(userId, forecast);
 
     await this.client.cablewayForecastPUT(dto.id, dto);
@@ -141,7 +141,7 @@ export class ApiClient implements IApiClient {
     return models;
   }
 
-  async createSnowmakingForecast(userId: string, forecast: ISnowmakingForecast): Promise<void> {
+  async createSnowmakingForecast(userId: number, forecast: ISnowmakingForecast): Promise<void> {
     var dto = this.toSnowmakingForecastDto(userId, forecast);
 
     await this.client.snowmakingForecastPOST(dto);
@@ -155,7 +155,7 @@ export class ApiClient implements IApiClient {
     return model;
   }
 
-  async updateSnowmakingForecast(userId: string, forecast: ISnowmakingForecast): Promise<void> {
+  async updateSnowmakingForecast(userId: number, forecast: ISnowmakingForecast): Promise<void> {
     var dto = this.toSnowmakingForecastDto(userId, forecast);
 
     await this.client.snowmakingForecastPUT(dto.id, dto);

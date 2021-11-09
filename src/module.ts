@@ -8,14 +8,6 @@ export const plugin = new PanelPlugin<PanelOptions>(WrapperPanel).setPanelOption
       path: 'endpoint',
       name: 'API Endpoint URL',
     })
-    .addTextInput({
-      path: 'username',
-      name: 'User Identification',
-    })
-    .addTextInput({
-      path: 'password',
-      name: 'User Password',
-    })
     .addRadio({
       path: 'type',
       defaultValue: 'cableways',
